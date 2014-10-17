@@ -144,7 +144,7 @@ user."
                ((stringp shell)
                 (bg-build-const (split-string shell "[ \n\t]+")))
                (t
-                (compat-error "Shell command required!"))))
+                (esml-compat-error "Shell command required!"))))
    (cons 'attr
          (file-attributes file))))
 
@@ -189,14 +189,14 @@ The expression should evaluate to a bg-build project object."
   (cond
    ((not file)
     (bg-build-add-project
-     (compat-read-file-name
+     (esml-compat-read-file-name
       "Specify bg-build -file: " nil nil t nil 'bg-build-add-project-history)
      dont-save))
    ((not (and (file-readable-p file)
               (file-regular-p file)))
-    (compat-error "Specified file is not a regular readable file"))
+    (esml-compat-error "Specified file is not a regular readable file"))
    (t
-    (let* ((file (compat-abbreviate-file-name (file-truename file)))
+    (let* ((file (esml-compat-abbreviate-file-name (file-truename file)))
            (directory (file-name-directory file))
            (data (with-temp-buffer
                    (buffer-disable-undo)
@@ -224,7 +224,7 @@ The expression should evaluate to a bg-build project object."
   (let* ((file (car project))
          (proc (bg-build-assoc-cdr file bg-build-live-builds)))
     (cond
-     ((and proc (compat-process-live-p proc))
+     ((and proc (esml-compat-process-live-p proc))
       ;; Ok.  We interrupt the build.
       (interrupt-process proc))
      (proc
@@ -250,7 +250,7 @@ The expression should evaluate to a bg-build project object."
                (unless (eq label 'progress)
                  (apply original-display-message label args))))))
     (unwind-protect
-        (compat-compilation-parse-errors)
+        (esml-compat-compilation-parse-errors)
       (when (fboundp 'display-message)
         (fset 'display-message original-display-message)))))
 
@@ -351,7 +351,7 @@ The expression should evaluate to a bg-build project object."
         (when (buffer-live-p buffer)
           (with-current-buffer buffer
             (compilation-mode)
-            (compat-add-local-hook
+            (esml-compat-add-local-hook
              'kill-buffer-hook
              (bg-build-kill-buffer-hook project))
             (setq buffer-read-only nil)
@@ -454,7 +454,7 @@ The expression should evaluate to a bg-build project object."
       (let* ((buffer (generate-new-buffer name))
              (process (with-current-buffer buffer
                         (buffer-disable-undo)
-                        (compat-add-local-hook
+                        (esml-compat-add-local-hook
                          'kill-buffer-hook
                          (bg-build-kill-buffer-hook project))
                         (insert "Compiling \"" file "\":\n\n")
@@ -554,7 +554,7 @@ The expression should evaluate to a bg-build project object."
 
 (defun bg-build-delete-timer ()
   (when bg-build-timer
-    (compat-delete-timer bg-build-timer)
+    (esml-compat-delete-timer bg-build-timer)
     (setq bg-build-timer nil)))
 
 (defun bg-build-create-timer ()
@@ -567,7 +567,7 @@ The expression should evaluate to a bg-build project object."
 (defun bg-build-after-save-hook ()
   (setq bg-build-saved-files
         (bg-build-cons-once
-         (compat-abbreviate-file-name (file-truename (buffer-file-name)))
+         (esml-compat-abbreviate-file-name (file-truename (buffer-file-name)))
          bg-build-saved-files))
   (bg-build-create-timer))
 

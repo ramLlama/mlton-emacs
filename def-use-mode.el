@@ -147,11 +147,11 @@ available commands."
 \\[def-use-jump-to-prev] was last invoked."
   (interactive)
   (if (ring-empty-p def-use-marker-ring)
-      (compat-error "No previous jump locations for invocation"))
+      (esml-compat-error "No previous jump locations for invocation"))
   (let ((marker (ring-remove def-use-marker-ring 0)))
     (switch-to-buffer
      (or (marker-buffer marker)
-         (compat-error "The marked buffer has been deleted")))
+         (esml-compat-error "The marked buffer has been deleted")))
     (goto-char (marker-position marker))
     (set-marker marker nil nil)))
 
@@ -186,7 +186,7 @@ available commands."
 position."
   (cond
    ((not (file-readable-p (def-use-ref-src ref)))
-    (compat-error "Referenced file %s can not be read" (def-use-ref-src ref)))
+    (esml-compat-error "Referenced file %s can not be read" (def-use-ref-src ref)))
    (other-window
     (def-use-find-file (def-use-ref-src ref) t))
    ((not (equal (def-use-buffer-file-truename) (def-use-ref-src ref)))
@@ -244,7 +244,7 @@ the symbol."
           (switch-to-buffer-other-window buffer)
           (buffer-disable-undo)
           (def-use-list-mode)
-          (compat-add-local-hook
+          (esml-compat-add-local-hook
             'kill-buffer-hook (function def-use-list-view-unmark-all))
           (set (make-local-variable 'def-use-list-sym)
                sym)
@@ -437,7 +437,7 @@ argument the message is also inserted to the `kill-ring'."
 
 (defun def-use-delete-highlight-timer ()
   (when def-use-highlight-timer
-    (compat-delete-timer def-use-highlight-timer)
+    (esml-compat-delete-timer def-use-highlight-timer)
     (setq def-use-highlight-timer nil)))
 
 (defun def-use-create-highlight-timer ()

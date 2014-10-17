@@ -47,12 +47,12 @@ by the user."
   (cond
    ((not duf)
     (esml-du-mlton
-     (compat-read-file-name
+     (esml-compat-read-file-name
       "Specify def-use -file: " nil nil t nil 'esml-du-mlton-history)
      dont-save))
    ((not (and (file-readable-p duf)
               (file-regular-p duf)))
-    (compat-error "Specified file is not a regular readable file"))
+    (esml-compat-error "Specified file is not a regular readable file"))
    ((run-with-idle-timer
      0.5 nil
      (function
@@ -201,11 +201,11 @@ beginning of the symbol."
   (esml-du-stop-parsing ctx)
   (let ((timer (esml-du-ctx-poll-timer ctx)))
     (when timer
-      (compat-delete-timer timer)
+      (esml-compat-delete-timer timer)
       (esml-du-ctx-set-poll-timer nil ctx)))
   (let ((timer (esml-du-ctx-reload-timer ctx)))
     (when timer
-      (compat-delete-timer timer)
+      (esml-compat-delete-timer timer)
       (esml-du-ctx-set-reload-timer nil ctx)))
   (esml-du-set-live-dufs
    (remove* (esml-du-ctx-duf ctx)
@@ -267,7 +267,7 @@ beginning of the symbol."
             attrs
             (esml-du-ctx-attr ctx))
       (when (esml-du-ctx-reload-timer ctx)
-        (compat-delete-timer (esml-du-ctx-reload-timer ctx)))
+        (esml-compat-delete-timer (esml-du-ctx-reload-timer ctx)))
       (esml-du-ctx-set-reload-timer
        (run-with-idle-timer
         0.5
@@ -413,7 +413,7 @@ Returns the symbol read and deletes the read symbol from the buffer."
      (generate-new-buffer (concat "** " (esml-du-ctx-duf ctx) " **")) ctx)
     (with-current-buffer (esml-du-ctx-buf ctx)
       (buffer-disable-undo)
-      (compat-add-local-hook
+      (esml-compat-add-local-hook
        'kill-buffer-hook
        (lexical-let ((ctx ctx))
          (function

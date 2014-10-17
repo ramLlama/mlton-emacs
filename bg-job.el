@@ -4,7 +4,7 @@
 ;; See the file MLton-LICENSE for details.
 
 (require 'cl)
-(require 'compat)
+(require 'esml-compat)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Customization
@@ -72,7 +72,7 @@ jobs may be active simultaneously."
 
 (defun bg-job-timer-stop ()
   (when bg-job-timer
-    (compat-delete-timer bg-job-timer)
+    (esml-compat-delete-timer bg-job-timer)
     (setq bg-job-timer nil)))
 
 (defun bg-job-quantum ()

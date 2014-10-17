@@ -4,7 +4,7 @@
 ;; See the file MLton-LICENSE for details.
 
 (require 'cl)
-(require 'compat)
+(require 'esml-compat)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Utils
