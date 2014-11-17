@@ -39,7 +39,6 @@
 
 ;; TBD:
 ;; - fix indentation bugs
-;; - use something more robust than `shell-command' to run shell commands
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Prelude
@@ -167,12 +166,8 @@ the name of the MLB file."
                            (lambda (s)
                              (esml-split-string s "[ \t]*[{}|][ \t]*")))
                           (esml-split-string
-                           (with-temp-buffer
-                             (save-window-excursion
-                               (shell-command
-                                esml-mlb-show-annotations-command
-                                (current-buffer))
-                               (buffer-string)))
+			   (shell-command-to-string
+			    esml-mlb-show-annotations-command)
                            "[ \t]*\n+[ \t]*"))))
                (function
                 (lambda (a b)
@@ -199,12 +194,7 @@ by `esml-mlb-update'.")
          (sort (append
                 esml-mlb-additional-path-variables
                 (esml-mlb-parse-path-variables-from-string
-                 (with-temp-buffer
-                   (save-window-excursion
-                     (shell-command
-                      esml-mlb-show-path-map-command
-                      (current-buffer))
-                     (buffer-string))))
+		 (shell-command-to-string esml-mlb-show-path-map-command))
                 (loop for file in esml-mlb-mlb-path-map-files
                   append (when (file-readable-p file)
                            (esml-mlb-parse-path-variables-from-string
