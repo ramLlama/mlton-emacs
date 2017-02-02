@@ -4,7 +4,7 @@
 ;; See the file MLton-LICENSE for details.
 
 (require 'cl)
-(require 'compat)
+(require 'esml-compat)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Utilities
@@ -29,7 +29,7 @@
      (lambda ()
        (def-use-intern
          (def-use-add-face 'font-lock-keyword-face
-           (compat-abbreviate-file-name (file-truename file))))))
+           (esml-compat-abbreviate-file-name (file-truename file))))))
     def-use-file-truename-table))
 
 (defun def-use-find-buffer-visiting-file (file)
