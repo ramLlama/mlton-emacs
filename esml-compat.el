@@ -46,7 +46,7 @@
     (defun esml-compat-compilation-parse-errors ()
       (funcall compilation-parse-errors-function nil nil))
   (defun esml-compat-compilation-parse-errors ()
-    (compilation-esml-compat-parse-errors (point-max))))
+    (funcall 'compilation-parse-errors (point-min) (point-max))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
