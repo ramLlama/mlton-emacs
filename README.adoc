@@ -2,4 +2,6 @@
 Ram Raghunathan <ram@llama.is>
 2014-10-17
 
-Maintained Mirror of mlton emacs modules, working with emacs nightly build.
+Mirror of mlton emacs modules, outside of MLton tree.
+
+This repo is not really updated unless I see an error. However, pull requests are more than welcome.
