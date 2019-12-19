@@ -1,10 +1,10 @@
 ;; Copyright (C) 2007 Vesa Karvonen
 ;;
-;; MLton is released under a BSD-style license.
+;; MLton is released under a HPND-style license.
 ;; See the file MLton-LICENSE for details.
 
 (require 'cl)
-(require 'esml-compat)
+(require 'compat)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Utilities
@@ -29,7 +29,7 @@
      (lambda ()
        (def-use-intern
          (def-use-add-face 'font-lock-keyword-face
-           (esml-compat-abbreviate-file-name (file-truename file))))))
+           (compat-abbreviate-file-name (file-truename file))))))
     def-use-file-truename-table))
 
 (defun def-use-find-buffer-visiting-file (file)
@@ -147,7 +147,7 @@ one of the modification times is nil."
   "Returns non-nil iff the file attributes of `attr1' are different than
 the file attributes of `attr2'.  Note that this also returns nil when either
 one of the file attributes is nil."
-  (labels ((nequal (i) (not (equal (nth i attr1) (nth i attr2)))))
+  (cl-labels ((nequal (i) (not (equal (nth i attr1) (nth i attr2)))))
     (and attr1 attr2
          (or (def-use-attr-newer? attr1 attr2)
              (nequal 7)  ;; size

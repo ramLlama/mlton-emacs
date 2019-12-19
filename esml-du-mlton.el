@@ -1,6 +1,6 @@
 ;; Copyright (C) 2007-2008 Vesa Karvonen
 ;;
-;; MLton is released under a BSD-style license.
+;; MLton is released under a HPND-style license.
 ;; See the file MLton-LICENSE for details.
 
 (require 'def-use-mode)
@@ -47,12 +47,12 @@ by the user."
   (cond
    ((not duf)
     (esml-du-mlton
-     (esml-compat-read-file-name
+     (compat-read-file-name
       "Specify def-use -file: " nil nil t nil 'esml-du-mlton-history)
      dont-save))
    ((not (and (file-readable-p duf)
               (file-regular-p duf)))
-    (esml-compat-error "Specified file is not a regular readable file"))
+    (compat-error "Specified file is not a regular readable file"))
    ((run-with-idle-timer
      0.5 nil
      (function
@@ -201,11 +201,11 @@ beginning of the symbol."
   (esml-du-stop-parsing ctx)
   (let ((timer (esml-du-ctx-poll-timer ctx)))
     (when timer
-      (esml-compat-delete-timer timer)
+      (compat-delete-timer timer)
       (esml-du-ctx-set-poll-timer nil ctx)))
   (let ((timer (esml-du-ctx-reload-timer ctx)))
     (when timer
-      (esml-compat-delete-timer timer)
+      (compat-delete-timer timer)
       (esml-du-ctx-set-reload-timer nil ctx)))
   (esml-du-set-live-dufs
    (remove* (esml-du-ctx-duf ctx)
@@ -267,7 +267,7 @@ beginning of the symbol."
             attrs
             (esml-du-ctx-attr ctx))
       (when (esml-du-ctx-reload-timer ctx)
-        (esml-compat-delete-timer (esml-du-ctx-reload-timer ctx)))
+        (compat-delete-timer (esml-du-ctx-reload-timer ctx)))
       (esml-du-ctx-set-reload-timer
        (run-with-idle-timer
         0.5
@@ -363,8 +363,8 @@ Returns the symbol read and deletes the read symbol from the buffer."
          (class (def-use-intern (esml-du-read "^ " " ")))
          (name (def-use-intern (esml-du-read "^ " " ")))
          (src (def-use-file-truename (esml-du-read "^ " " ")))
-         (line (string-to-int (esml-du-read "^." ".")))
-         (col (1- (string-to-int (esml-du-read "^ \n" " "))))
+         (line (string-to-number (esml-du-read "^." ".")))
+         (col (1- (string-to-number (esml-du-read "^ \n" " "))))
          (msg (esml-du-highlight-type
                (def-use-intern (esml-du-read-opt-str))))
          (pos (def-use-pos line col))
@@ -379,8 +379,8 @@ Returns the symbol read and deletes the read symbol from the buffer."
     (skip-chars-forward "\n")
     (while (< 0 (skip-chars-forward " "))
       (let* ((src (def-use-file-truename (esml-du-read "^ " " ")))
-             (line (string-to-int (esml-du-read "^." ".")))
-             (col (1- (string-to-int (esml-du-read "^\n" "\n"))))
+             (line (string-to-number (esml-du-read "^." ".")))
+             (col (1- (string-to-number (esml-du-read "^\n" "\n"))))
              (pos (def-use-pos line col))
              (ref (def-use-ref src pos)))
         (let ((old-sym (gethash ref ref-to-sym)))
@@ -413,7 +413,7 @@ Returns the symbol read and deletes the read symbol from the buffer."
      (generate-new-buffer (concat "** " (esml-du-ctx-duf ctx) " **")) ctx)
     (with-current-buffer (esml-du-ctx-buf ctx)
       (buffer-disable-undo)
-      (esml-compat-add-local-hook
+      (compat-add-local-hook
        'kill-buffer-hook
        (lexical-let ((ctx ctx))
          (function

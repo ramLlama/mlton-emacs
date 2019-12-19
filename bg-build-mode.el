@@ -1,6 +1,6 @@
 ;; Copyright (C) 2007-2008 Vesa Karvonen
 ;;
-;; MLton is released under a BSD-style license.
+;; MLton is released under a HPND-style license.
 ;; See the file MLton-LICENSE for details.
 
 (require 'compile)
@@ -144,7 +144,7 @@ user."
                ((stringp shell)
                 (bg-build-const (split-string shell "[ \n\t]+")))
                (t
-                (esml-compat-error "Shell command required!"))))
+                (compat-error "Shell command required!"))))
    (cons 'attr
          (file-attributes file))))
 
@@ -189,21 +189,21 @@ The expression should evaluate to a bg-build project object."
   (cond
    ((not file)
     (bg-build-add-project
-     (esml-compat-read-file-name
+     (compat-read-file-name
       "Specify bg-build -file: " nil nil t nil 'bg-build-add-project-history)
      dont-save))
    ((not (and (file-readable-p file)
               (file-regular-p file)))
-    (esml-compat-error "Specified file is not a regular readable file"))
+    (compat-error "Specified file is not a regular readable file"))
    (t
-    (let* ((file (esml-compat-abbreviate-file-name (file-truename file)))
+    (let* ((file (compat-abbreviate-file-name (file-truename file)))
            (directory (file-name-directory file))
            (data (with-temp-buffer
                    (buffer-disable-undo)
                    (insert-file-contents file)
                    (setq default-directory directory)
                    (goto-char (point-min))
-                   (eval `(labels
+                   (eval `(cl-labels
                               ((bg-build
                                 (&rest args)
                                 (apply (function bg-build-prj) ,file args)))
@@ -224,7 +224,7 @@ The expression should evaluate to a bg-build project object."
   (let* ((file (car project))
          (proc (bg-build-assoc-cdr file bg-build-live-builds)))
     (cond
-     ((and proc (esml-compat-process-live-p proc))
+     ((and proc (compat-process-live-p proc))
       ;; Ok.  We interrupt the build.
       (interrupt-process proc))
      (proc
@@ -250,7 +250,7 @@ The expression should evaluate to a bg-build project object."
                (unless (eq label 'progress)
                  (apply original-display-message label args))))))
     (unwind-protect
-        (esml-compat-compilation-parse-errors)
+        (compat-compilation-parse-errors)
       (when (fboundp 'display-message)
         (fset 'display-message original-display-message)))))
 
@@ -351,7 +351,7 @@ The expression should evaluate to a bg-build project object."
         (when (buffer-live-p buffer)
           (with-current-buffer buffer
             (compilation-mode)
-            (esml-compat-add-local-hook
+            (compat-add-local-hook
              'kill-buffer-hook
              (bg-build-kill-buffer-hook project))
             (setq buffer-read-only nil)
@@ -365,9 +365,7 @@ The expression should evaluate to a bg-build project object."
                 (kill-buffer (cdr previous))))
             (push (cons file buffer)
                   bg-build-finished-builds)
-            (setq buffer-read-only nil)
             (bg-build-parse-messages)
-            (setq buffer-read-only t)
             (set (make-local-variable 'bg-build-messages)
                  (or (and (boundp 'compilation-locs)
                           (hash-table-p compilation-locs)
@@ -456,7 +454,7 @@ The expression should evaluate to a bg-build project object."
       (let* ((buffer (generate-new-buffer name))
              (process (with-current-buffer buffer
                         (buffer-disable-undo)
-                        (esml-compat-add-local-hook
+                        (compat-add-local-hook
                          'kill-buffer-hook
                          (bg-build-kill-buffer-hook project))
                         (insert "Compiling \"" file "\":\n\n")
@@ -556,7 +554,7 @@ The expression should evaluate to a bg-build project object."
 
 (defun bg-build-delete-timer ()
   (when bg-build-timer
-    (esml-compat-delete-timer bg-build-timer)
+    (compat-delete-timer bg-build-timer)
     (setq bg-build-timer nil)))
 
 (defun bg-build-create-timer ()
@@ -569,7 +567,7 @@ The expression should evaluate to a bg-build project object."
 (defun bg-build-after-save-hook ()
   (setq bg-build-saved-files
         (bg-build-cons-once
-         (esml-compat-abbreviate-file-name (file-truename (buffer-file-name)))
+         (compat-abbreviate-file-name (file-truename (buffer-file-name)))
          bg-build-saved-files))
   (bg-build-create-timer))
 
@@ -650,10 +648,10 @@ The expression should evaluate to a bg-build project object."
           (setq buffer-read-only t)
           (goto-char point)))))
   (setq bg-build-status
-        (labels ((fmt (label n)
-                      (cond ((= n 0) "")
-                            ((= n 1) label)
-                            (t (format "%s%d" label n)))))
+        (cl-labels ((fmt (label n)
+                         (cond ((= n 0) "")
+                               ((= n 1) label)
+                               (t (format "%s%d" label n)))))
           (let* ((queued (fmt "Q" (length bg-build-build-queue)))
                  (live (fmt "L" (length bg-build-live-builds)))
                  (messages
